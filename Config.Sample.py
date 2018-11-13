@@ -1,9 +1,7 @@
-class Config:
+"""
+botToken: str
+telegramId: int
+"""
 
-    """
-    botToken: str
-    telegramId: int
-    """
-
-    botToken = ''
-    telegramId = 999
+botToken = ''
+telegramId = 999
