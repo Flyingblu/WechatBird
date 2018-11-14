@@ -1,3 +1,4 @@
+# coding=utf-8
 import telepot
 import itchat
 import config

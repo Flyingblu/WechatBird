@@ -13,7 +13,7 @@ def print_content(msg):
     incomeUsr = itchat.search_friends(userName=msg['FromUserName'])
     if not incomeUsr['Uin']:
         send = f"{contact_shower(incomeUsr['NickName'], incomeUsr['RemarkName'])}\n{msg['Content']}"
-        print(wechatBird.sendMessage(config.telegramId, send))
+        print(wechat_bird.bot.sendMessage(config.telegramId, send))
 
     else:
         print("Ignored self message.")
