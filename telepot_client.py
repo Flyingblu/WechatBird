@@ -1,4 +1,5 @@
 # coding=utf-8
+import os
 import telepot
 import itchat
 import config
@@ -97,7 +98,17 @@ class TelepotClient:
             self.bot.sendMessage(config.telegramId, "Sorry, friend not found")
             print("Friend not found")
 
-    def handle_telegram_message(self, msg):
+    def photo_handler(self, msg):
+        photo_id = msg['photo'][-1]['file_id']
+        self.bot.download_file(photo_id, f"{photo_id}.png")
+        itchat.send_image(f"{photo_id}.png", self.usr_name)
+        os.remove(f"{photo_id}.png")
+        self.bot.sendMessage(config.telegramId,
+                             f"Photo sent to {contact_shower(self.usr_nick, self.usr_remark)}"
+                             )
+        print(f"Photo sent to {contact_shower(self.usr_nick, self.usr_remark)}")
+
+    def text_handler(self, msg):
         if msg['text'][0] == '/':
             if msg['text'] == r'/settalkto':
                 self.set_talk_to()
@@ -129,3 +140,13 @@ class TelepotClient:
                 print(
                     f"Message sent to {contact_shower(self.usr_nick, self.usr_remark)}"
                 )
+
+    def handle_telegram_message(self, msg):
+
+        # check the type of incoming message
+        content_type, chat_type, chat_id = telepot.glance(msg)
+        if content_type == 'photo':
+            self.photo_handler(msg)
+
+        elif content_type == 'text':
+            self.text_handler(msg)
