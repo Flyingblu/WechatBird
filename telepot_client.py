@@ -141,6 +141,24 @@ class TelepotClient:
                     f"Message sent to {contact_shower(self.usr_nick, self.usr_remark)}"
                 )
 
+    def document_handler(self, msg):
+        self.bot.sendMessage(config.telegramId,
+                             f"File received, forwarding to {contact_shower(self.usr_nick, self.usr_remark)}")
+        file_name = msg['document']['file_name']
+        file_id = msg['document']['file_id']
+        self.bot.download_file(file_id, file_name)
+        print("File received, forwarding...")
+        if msg['document']['mime_type'][:5] == 'video':
+            itchat.send_video(file_name, self.usr_name)
+        elif msg['document']['mime_type'][:5] == 'image':
+            itchat.send_image(file_name, self.usr_name)
+        else:
+            itchat.send_file(file_name, self.usr_name)
+
+        os.remove(file_name)
+        self.bot.sendMessage(config.telegramId, "File forwarding complete!")
+        print("File forwarded")
+
     def handle_telegram_message(self, msg):
 
         # check the type of incoming message
@@ -150,3 +168,6 @@ class TelepotClient:
 
         elif content_type == 'text':
             self.text_handler(msg)
+
+        elif content_type == 'document':
+            self.document_handler(msg)

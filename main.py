@@ -25,10 +25,20 @@ def handle_pic_content(msg):
     if msg['FromUserName'] != self_usr_name:
         send_title = f"Pic from: {contact_shower(income_usr['NickName'], income_usr['RemarkName'])}"
         msg['Text'](msg['FileName'])
-        wechat_bird.bot.sendPhoto(config.telegramId, open(msg['FileName'], 'rb'))
+        pic_info = inspect_pic(msg['FileName'])
+        if pic_info[0] != 'GIF':
+            if pic_info[1][0] > 1280 or pic_info[1][1] > 1280:
+                wechat_bird.bot.sendDocument(config.telegramId, open(msg['FileName'], 'rb'))
+            else:
+                wechat_bird.bot.sendPhoto(config.telegramId, open(msg['FileName'], 'rb'))
+
+        else:
+            wechat_bird.bot.sendDocument(config.telegramId, open(msg['FileName'], 'rb'))
+
         wechat_bird.bot.sendMessage(config.telegramId, send_title)
         os.remove(msg['FileName'])
-        print(send_title + " sent")
+        print(send_title, 'sent')
+
     else:
         print("Ignored self pic")
 
